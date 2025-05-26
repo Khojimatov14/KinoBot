@@ -1,17 +1,39 @@
 import asyncio
 from aiogram import F
 from zoneinfo import ZoneInfo
-from utils import subscription, send_zip_data
-from data.config import CHANNELS
+from data.config import CHANNELS, ADMINS
 from sqlite3 import IntegrityError
-from loader import dp, bot, users_db, movies_db, movies_info_db
+from loader import dp, bot, users_db
 from aiogram.filters import StateFilter
 from states import UserStates, AdminStates
 from aiogram.fsm.context import FSMContext
+from utils import subscription, send_zip_data
 from aiogram.types import Message, CallbackQuery
-from aiogram.filters.command import CommandStart, Command
 from aiogram.exceptions import TelegramBadRequest
 from keyboards import main_keyboards, channels_keyboard
+from aiogram.filters.command import CommandStart, Command
+
+
+@dp.message(F.content_type == "video")
+async def movie_video(message: Message, state: FSMContext):
+    video = message.video
+
+    # file_size_bytes = video.file_size
+    # file_size_mb = file_size_bytes / (1024 * 1024)  # MB ga o'tkazish
+    # file_size_gb = file_size_bytes / (1024 * 1024 * 1024)  # GB ga o'tkazish
+    #
+    # if file_size_gb >= 1:
+    #     print(f"{file_size_gb:.2f} GB")
+    # else:
+    #     print(f"{file_size_mb:.1f} MB")
+
+
+    # duration_in_seconds = video.duration
+    # hours = duration_in_seconds // 3600
+    # minutes = (duration_in_seconds % 3600) // 60
+    #
+    # print(f"{hours} soat {minutes} daqiqa")
+    # print(video.file_name)
 
 
 @dp.message(Command("bot"))
@@ -20,7 +42,7 @@ async def bot_start(message: Message):
                               "Yoki qo'ng'iroq qiling!\n\nTelegram: @khojimatov14\n+998 90-626-66-44")
 
 
-@dp.message(Command("send_db_for_admin"))
+@dp.message(Command("senddb"), F.from_user.id.in_(ADMINS))
 async def send_zip(message: Message):
     await message.answer(text="DB yuborildi")
     await send_zip_data()

@@ -1,10 +1,9 @@
-import asyncio
 import os
-from typing import Union
+import asyncio
 import pyminizip
-from aiogram.types import CallbackQuery, InputFile, FSInputFile
-
+from typing import Union
 from data import ADMINS
+from aiogram.types import FSInputFile
 
 
 async def subscription(user_id: int, channel: Union[int, str]) -> bool:
